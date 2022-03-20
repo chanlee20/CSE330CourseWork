@@ -1,0 +1,32 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <h2> Profile Music </h2>
+        <div>
+            <h4> My Profile Pic</h4>
+            <img style="height: 200px; width: 200px;" src=  "<%= image %>"" >
+            <p> Current Username:  <%= users %> </p> <br> <br>
+            <h4> Set your profile music to continue </h4>
+            <form action = "/main2" method = "POST">
+            <p> Profile Music: <input type = "text" name = "profileMusic" placeholder = "Music URL"> </p>
+            <a href = "/main2"><button> Add </button></a>
+            </form>
+        </div>
+</body>
+
+<script>
+
+        
+        var img = "<%= image %>";
+        var name = "<%= users %>";
+        console.log(img);
+        console.log(name);
+
+</script>
+</html>
