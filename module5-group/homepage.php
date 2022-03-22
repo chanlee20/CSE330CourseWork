@@ -1,0 +1,333 @@
+
+   <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Calendar </title>
+    <link rel="stylesheet" type = "text/css" href="style.css"/>
+
+</head>
+<body>
+    <?php 
+        // session_start();
+      //  $_SESSION['token'] = bin2hex(openssl_random_pseudo_bytes(32));
+
+    ?>
+    
+    
+    <p id = "status"> Not Logged in</p>
+    <!-- login form -->
+    <div id = "login_id" class = "login_class">
+        Login: <br>
+        Username: <input type = "text" id = "username" name = "username"> <br>
+        Password: <input type = "password" id = "password" name = "password"> <br>
+        <input type = "submit" value = "submit" id = "login">
+    </div> <br>
+    
+    <!-- register form -->
+    <div id = "register_id" class="register_class">
+        Sign Up: <br>
+        Username: <input type = "text" id = "newuser" name = "newuser"> <br>
+        Password: <input type = "password" id = "newpass" name = "newpass"> <br>
+        <input type = "submit" value = "submit" id="register"> <br> <br>
+    </div>
+
+    <!-- addEvent class -->
+    <div id = "addevent_id" class="addevent_class">
+        Add event (only allowed when logged in): <br>
+        Event title: <input type = "text" id = "eventtitle" name = "eventtitle"> <br>
+        Event location: <input type = "text" id = "eventlocation" name = "eventlocation"> <br>
+        Event date in form (month/day/year ex. 02/01/22): <input type = "date" id = "eventdate" name = "eventdate"> <br>
+        Event time (ex. 13:20): <input type = "time" id = "eventtime" name = "eventtime"> <br>
+        <input type="hidden" id = "token" name="token" value= "" />
+        <input type = "submit" value = "submit" id="addevent"> <br> <br>
+    
+    </div>
+
+    <div class = "logout_class">
+        <button id = "logout"> Logout </button>
+    </div>
+
+    <!-- <form action="getevents.php" method="post">
+        <input type="submit" name="viewevents"
+                value="View list of events"/>
+    </form> -->
+
+  
+
+
+
+    <div class = "calendar-body">
+        
+
+        <h3 id = "month-title"></h3>
+
+        <div id = "jump_id" class="jump_class">
+            Go to month: <input type = "text" id = "gotomonth" name = "gotomonth"> <br>
+            Go to year: <input type = "text" id = "gotoyear" name = "gotoyear"> <br>
+            <input type = "submit" value = "jump" id="jump"> <br> <br>
+
+         </div>
+        <button id = "prev_month_btn"> Previous Month </button>
+        <button id = "next_month_btn"> Next Month </button>
+        <table id = "calendar">
+            <tr id = "label">
+                <th> Sunday </th>
+                <th> Monday </th>
+                <th> Tuesday </th>
+                <th> Wednesday </th>
+                <th> Thursday </th>
+                <th> Friday </th>
+                <th> Saturday </th>
+            </tr>
+
+            <tr id = "w0"></tr>
+            <tr id = "w1"></tr>
+            <tr id = "w2"></tr>
+            <tr id = "w3"></tr>
+            <tr id = "w4"></tr>
+            <tr id = "w5"></tr>
+
+        </table>
+
+
+
+    </div>
+
+    <div id="eventlist">
+        <h4>List of your events:</h4>
+        <p id="list"></p>
+    </div>
+    
+    <!-- form to delete event -->
+    <div id = "deleteevent_id" class="deleteevent_class">
+        To delete event, input the event number: <br>
+        Event number: <input type = "text" id = "eventnumber" name = "eventnumber"> <br>
+        <input type="hidden" name="token" value= "" />
+        <input type = "submit" value = "Delete" id="deleteevent"> <br> <br>
+     
+     </div>
+     <!-- edit event -->
+     <div id = "editevent_id" class="editevent_class">
+        Edit events here: <br>
+        Input event id of the event to edit: <input type = "text" id = "eventidedit" name = "eventidedit"> <br>
+        Change event title to: <input type = "text" id = "changedtitle" name = "changedtitle"> <br>
+        Change event location to: <input type = "text" id = "changedloc" name = "changedloc"> <br>
+        Change event date to: <input type = "date" id = "changeddate" name = "changeddate"> <br>
+        Change event time to: <input type = "time" id = "changedtime" name = "changedtime"> <br>
+        <input type="hidden" name="token" value= "" />
+        <input type = "submit" value = "Edit event " id="editevent"> <br>
+
+     </div>
+    
+    <script src = "calendar_functions.js" type = "text/javascript"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" type="text/javascript"></script>
+    <script>
+    
+
+    function login(event){
+        let username = document.getElementById("username").value;
+        let password = document.getElementById("password").value;
+
+        const data = {"username": username, "password": password};
+
+        if(username === "" || password === ""){
+            alert("Missing values");
+        }
+        else{
+            fetch("login.php", {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: {
+                    'content-type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(function(data){
+                if(data.success){
+                    console.log(data.message);
+                    document.getElementById("status").innerHTML = "You are logged in";
+                    check();
+                    eventsToCalendar();
+                    document.getElementById("token").value = data.message;
+                }
+                else{
+                    document.getElementById("status").innerHTML = "failed user";
+                    // console.log(data.message);
+                }
+            })
+            .catch(err => console.error(err));
+        }
+       
+    }
+
+    document.getElementById("login").addEventListener("click", login, false);
+
+    function logout(event){
+            fetch("logout.php", {
+                headers: {
+                    'content-type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(function(data){
+                if(data.success){
+                    // console.log("logged out");
+                    document.getElementById("status").innerHTML = data.message;
+                    check();
+                    updateCalendar();
+
+                }
+                else{
+                    document.getElementById("status").innerHTML = "failed to logout";
+                }
+            })
+            .catch(err => console.error(err));
+        
+    }
+
+    document.getElementById("logout").addEventListener("click", logout, false);
+    
+    function register(event){
+        let newuser = document.getElementById("newuser").value;
+        let newpass = document.getElementById("newpass").value;
+        // console.log(newuser);
+        // console.log(newpass);
+        const data = {"newuser":  newuser, "newpass": newpass};
+        // console.log(data);
+
+        if(newuser === "" || newpass === ""){
+            alert("Missing values");
+        }
+
+        else{
+            fetch("register.php", {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: {
+                    'content-type': 'application/json'
+                }
+                
+            })
+            
+            .then(response => response.json())
+            .then(function(data){
+                if(data.success){
+                    // console.log(data.message);
+                    // console.log("user created");
+                    document.getElementById("status").innerHTML = "User created";
+                }
+                else{
+                    document.getElementById("status").innerHTML = "failed to create new user";
+                    console.log(data.message);
+                }
+            })
+            .catch(err => console.error(err));
+        }
+    }
+    document.getElementById("register").addEventListener("click", register, false);
+
+    function addevent(event){
+        let eventtitle = document.getElementById("eventtitle").value;
+        let eventdate= document.getElementById("eventdate").value;
+        let eventtime= document.getElementById("eventtime").value;
+        let eventlocation= document.getElementById("eventlocation").value;
+        let token = document.getElementById("token").value;
+        const data = {"eventtitle":  eventtitle, "eventlocation": eventlocation, "eventdate": eventdate, "eventtime": eventtime, "token": token};
+
+        if(eventtitle === "" || eventtime === "" || eventdate==="" || eventlocation===""){
+            alert("Missing values");
+        }
+
+        else{
+            fetch("addevent.php", {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: {
+                    'content-type': 'application/json'
+                }
+            })
+            
+            .then(response => response.json())
+            .then(function(data){
+                if(data.success){
+                    document.getElementById("status").innerHTML = "Event added successfully";
+                    document. getElementById('eventtitle'). value = "";
+                    document. getElementById('eventtime'). value = "";
+                    document. getElementById('eventdate'). value = "";
+                    document. getElementById('eventlocation'). value = "";
+                    updateCalendar();
+                    eventsToCalendar();
+                }
+                else{
+                    document.getElementById("status").innerHTML = "Failed to add event";
+                    console.log(data.message);
+
+                    // console.log(data.message);
+                }
+            })
+            // .catch(err => console.error(err));
+        }
+    }
+    document.getElementById("addevent").addEventListener("click", addevent, false);
+
+    function check(event){
+        console.log("checking..");
+        fetch("check.php", {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'  
+            }
+        })
+        .then(response=>response.json())
+        .then(function(data){
+            if(data.success){
+                document.getElementById("addevent_id").style.display = "inline";
+                document.getElementById("editevent_id").style.display = "inline";
+                document.getElementById("deleteevent_id").style.display = "inline";
+                document.getElementById("eventlist").style.display = "inline";
+                document.getElementById("login_id").style.display = "none";
+                document.getElementById("register_id").style.display = "none";
+            }
+            else{
+                document.getElementById("addevent_id").style.display = "none";
+                document.getElementById("eventlist").style.display = "none"; 
+                document.getElementById("editevent_id").style.display = "none";
+                document.getElementById("deleteevent_id").style.display = "none";
+                document.getElementById("login_id").style.display = "inline";
+                document.getElementById("register_id").style.display = "inline";
+            }
+        })
+    }
+    document.addEventListener("DOMContentLoaded", check, false);
+
+    function getevents() {
+        fetch("getevents.php", {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'  
+            }
+        })
+        .then(response=>response.json())
+        .then(function(data){
+            if(data.success){
+                for (var i=0; i < data.totalevents; i++) {
+                    // console.log("event" + i+1);
+                    // console.log(data.eventtitle[i]);
+                    // console.log(data.eventtime[i]);
+                    // console.log(data.eventdate[i]);
+                }
+
+            }
+            else{
+               console.log("fail");
+            }
+        })
+    }
+
+    </script>
+
+</body>
+</html>

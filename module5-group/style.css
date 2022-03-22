@@ -1,0 +1,31 @@
+#calendar{
+  width: 100%;
+  border-collapse: collapse;
+
+}
+
+
+th{
+  border: 1px solid black;
+    display: inline-block;
+width: 13%;
+position: center;
+
+}
+
+td{
+  border: 1px solid black;
+    display: inline-block;
+width: 13%;
+position: center;
+text-align: center;
+height: 150px;
+}
+
+#month-title{
+  text-align: center;
+}
+
+.event_on_cal{
+margin-top: 0px;
+}
