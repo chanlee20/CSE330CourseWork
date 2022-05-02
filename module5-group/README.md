@@ -1,4 +1,7 @@
 AJAX Calendar :
+
+Link to Web: http://ec2-3-143-211-150.us-east-2.compute.amazonaws.com/~clee20/module5_g/homepage.php
+
 The calendar is displayed as a table grid with days as the columns and weeks as the rows, one month at a time 
 The user can view different months as far in the past or future as desired 
 
