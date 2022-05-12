@@ -1,6 +1,8 @@
-#module6
+
 Individual Portion (25 Points):
+
 Node.JS is installed on your EC2 instance (5 points)
+
 Take a screenshot of your browser visiting your EC2 instance serving up the college.html web page on port 3456, make sure the URL is visible in the screenshot.
 The hello.txt, brookings.jpg, and college.html files all load successfully (4 points each)
 Visiting a file that does not exist inside the static directory results in a 404 (4 points)
