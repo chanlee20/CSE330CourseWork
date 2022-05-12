@@ -1,3 +1,4 @@
+#module6
 Individual Portion (25 Points):
 Node.JS is installed on your EC2 instance (5 points)
 Take a screenshot of your browser visiting your EC2 instance serving up the college.html web page on port 3456, make sure the URL is visible in the screenshot.
