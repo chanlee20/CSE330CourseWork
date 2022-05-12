@@ -1,8 +1,4 @@
-# CSE330CourseWork
-Projects from CSE 330 Course
+# CSE330
+REPLACE-THIS-TEXT-WITH-YOUR-NAME-STUDENT-ID-AND-GITHUB-USERNAME
 
-
-Creative Project => Open Music Discussion Platform
-
-Module 5 Group => Active Calendar Website
-
+REPLACE-THIS-TEXT-WITH-YOUR-PARTNERS-NAME-STUDENT-ID-AND-GITHUB-USERNAME
